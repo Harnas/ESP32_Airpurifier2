@@ -7,7 +7,7 @@ Fan::Fan(int enpin, int pwmpin, int pwmchannel)
     b = 1149.92931547619;
 
     V_fan_max = 12.1;
-    V_fan_min = 6;
+    V_fan_min = 5;
     PWM_max_duty = 1023;
 
     duty = 0;

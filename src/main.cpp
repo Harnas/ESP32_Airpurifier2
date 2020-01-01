@@ -45,6 +45,7 @@ UIController uiController(&screen, &controller);
 // End of constructor list
 TaskHandle_t SensorTaskHandle;
 TaskHandle_t UITaskHandle;
+SemaphoreHandle_t UIRefreshSemaphore = xSemaphoreCreateBinary();
 
 void encoder_read()
 {
@@ -58,17 +59,20 @@ void encoder_read()
 
 void encoderButtonPressed(void)
 {
-  uiController.resetInteracionTimer(Button);
+  uiController.knobPress();
+  xSemaphoreGive(UIRefreshSemaphore);
 }
 void boardButtonPressed(void)
 {
   uiController.resetInteracionTimer(Button);
+  xSemaphoreGive(UIRefreshSemaphore);
 
   digitalWrite(LED_BUILTIN, LOW);
 }
 void boardButtonPressedLong(void)
 {
   uiController.resetInteracionTimer(Button);
+  xSemaphoreGive(UIRefreshSemaphore);
 }
 
 /*
@@ -81,10 +85,13 @@ void UITask(void *parameter)
   uiController.init();
   for (;;)
   {
+    if (xSemaphoreTake(UIRefreshSemaphore, (TickType_t)500) == pdTRUE)
+    {
+    }
     uiController.renderScreen();
-    delay(500);
   }
 }
+
 void sensorTask(void *parameter)
 {
   int last_full_refresh_time = 0;
@@ -156,5 +163,6 @@ void setup()
 
 void loop()
 {
+  vTaskSuspend(NULL);
   delay(10000);
 }

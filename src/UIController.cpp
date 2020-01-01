@@ -60,9 +60,24 @@ void UIController::corePowerManagement(void)
 void UIController::knobRotation(int delta)
 {
     resetInteracionTimer(Knob);
-
-    Serial.print(_aircleanercontroller->get_fan_power());
     _aircleanercontroller->set_fan_power(_aircleanercontroller->get_fan_power() + delta);
+}
+
+void UIController::knobPress(void)
+{
+    resetInteracionTimer(Knob);
+    Driver_mode mode = _aircleanercontroller->_settings->settings.mode;
+
+    if (mode == mode_Manual)
+    {
+        mode = mode_Auto;
+    }
+    else
+    {
+        mode = mode_Manual;
+    }
+
+    _aircleanercontroller->_settings->settings.mode = mode;
 }
 
 void UIController::init(void)

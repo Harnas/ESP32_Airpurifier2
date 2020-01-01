@@ -27,6 +27,7 @@ public:
     void screenPowerManagement(void);
     void corePowerManagement(void);
     void knobRotation(int delta);
+    void knobPress(void);
 
     void init(void);
     void renderScreen(void);
