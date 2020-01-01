@@ -19,7 +19,7 @@ Features:
 - [x] Encoder knob
 - [x] OLED screen UI
 - [x] Settings stored in non-volatile memory
-- [x] Power management - auto screen brightness and CPU clock control
+- [x] Power management - energy saving by auto screen brightness and CPU clock control
 - [ ] Captive portal
 - [ ] Web control panel - LAN
 - [ ] Web control panel - Internet webapp
