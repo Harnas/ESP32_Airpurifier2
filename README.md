@@ -8,7 +8,7 @@ Used elements:
 - GP2Y1010AU0F
 - BMP280
 - HDC1080
-- 0.91" OLED I2C screent
+- 0.91" OLED I2C screen
 - rotary encoder
 - 200mm 12V PC fan
 ```
