@@ -31,7 +31,6 @@ void Screen::render_basic_info_screen(Purifer_status_struct *info)
 
     sprintf(buffer, "%.2f\xB0 C", info->temperature);
     _screen->drawStr(0, 40, buffer);
-    refresh();
 }
 
 void Screen::render_settings_screen(Purifer_status_struct *info)
