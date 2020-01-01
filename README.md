@@ -23,6 +23,8 @@ Features:
 - [ ] Captive portal
 - [ ] Web control panel - LAN
 - [ ] Web control panel - Internet webapp
+- [ ] PMS5003 support
+- [ ] Custom PCB board
 
 
 More description on https://forbot.pl/forum/topic/15995-oczyszczacz-powietrza/
