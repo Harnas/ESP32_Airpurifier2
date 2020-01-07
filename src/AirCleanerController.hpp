@@ -21,6 +21,7 @@ struct Purifer_status_struct
     float humidity;
     uint32_t local_adress;
     bool internet;
+    bool purifier_on;
 };
 
 class AirCleanerController
@@ -36,6 +37,7 @@ public:
     Sensors *_sensors;
     AiEsp32RotaryEncoder *_rotaryEncoder;
     unsigned int fan_speed;
+    bool purifier_on;
 
 public:
     AirCleanerController(Settings *settings_controller, Sensors *sensors, Fan *fan, AiEsp32RotaryEncoder *rotaryEncoder);
@@ -45,5 +47,5 @@ public:
     int get_fan_power(void);
     void set_fan_power(int8_t val);
     void set_fan_power(Driver_mode mode, int8_t val);
-    Purifer_status_struct *get_whole_status(void);
+    Purifer_status_struct *update_and_get_whole_status(void);
 };

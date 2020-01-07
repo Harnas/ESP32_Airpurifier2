@@ -18,6 +18,7 @@ void Sensors::collectBME(void)
 {
     temperature = _BME->readTemperature();
     pressure = _BME->readPressure();
+    Serial.println(temperature);
     // humidity = _BME->readHumidity();
 }
 

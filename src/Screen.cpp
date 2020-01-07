@@ -15,6 +15,7 @@ void Screen::init(void)
     _screen->begin();
     _screen->setContrast(brightness);
 }
+
 void Screen::render_basic_info_screen(Purifer_status_struct *info)
 {
     char buffer[50];
@@ -26,11 +27,27 @@ void Screen::render_basic_info_screen(Purifer_status_struct *info)
     sprintf(buffer, "%dug/m3", info->dust);
     _screen->drawStr(0, 0, buffer);
 
-    sprintf(buffer, "Fan: %d%%", info->fan_speed);
+    if (info->purifier_on == true)
+    {
+        sprintf(buffer, "Fan: %d%%", info->fan_speed);
+    }
+    else
+    {
+        sprintf(buffer, "off");
+    }
     _screen->drawStr(0, 20, buffer);
 
     sprintf(buffer, "%.2f\xB0 C", info->temperature);
     _screen->drawStr(0, 40, buffer);
+
+    if (info->purifier_on == true)
+    {
+        sprintf(buffer, "on");
+    }
+    else
+    {
+        sprintf(buffer, "off");
+    }
 }
 
 void Screen::render_settings_screen(Purifer_status_struct *info)

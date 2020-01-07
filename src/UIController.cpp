@@ -6,16 +6,17 @@ UIController::UIController(Screen *screen, AirCleanerController *aircleanercontr
 {
     _screen = screen;
     _aircleanercontroller = aircleanercontroller;
+    _XtalFreq = getXtalFrequencyMhz();
 }
 
-void UIController::resetInteracionTimer(InteractionTypes type)
+void UIController::resetInteracionTimer(InteractionInterfaces type)
 {
     timeFromlastAction[type] = 0;
 }
 
 void UIController::incActionTimer(int miliseconds)
 {
-    for (int i = 0; i < _InteractionTypesCount; i++)
+    for (int i = 0; i < _InteractionInterfacesCount; i++)
     {
         timeFromlastAction[i] += miliseconds;
     }
@@ -26,7 +27,7 @@ void UIController::incActionTimer(int miliseconds)
 
 void UIController::screenPowerManagement(void)
 {
-    if (timeFromlastAction[Button] > ACTION_TIMEOUT && timeFromlastAction[Knob] > ACTION_TIMEOUT)
+    if (timeFromlastAction[interactionPhysical] > ACTION_TIMEOUT)
     {
         _screen->on = false;
         refresh();
@@ -38,7 +39,7 @@ void UIController::screenPowerManagement(void)
 }
 void UIController::corePowerManagement(void)
 {
-    for (int i = 0; i < _InteractionTypesCount; i++)
+    for (int i = 0; i < _InteractionInterfacesCount; i++)
     {
         if (timeFromlastAction[i] < ACTION_TIMEOUT)
         {
@@ -50,22 +51,72 @@ void UIController::corePowerManagement(void)
         }
     }
 
-    if (getCpuFrequencyMhz() != 80) // change clock once
+    if (getCpuFrequencyMhz() != _XtalFreq) // change clock once
     {
-        setCpuFrequencyMhz(80); //Set CPU clock to 80MHz
+        setCpuFrequencyMhz(_XtalFreq); //Set CPU clock to Xtal frequency - 24, 26 or 40MHz depends on board
         _aircleanercontroller->_settings->save();
     }
 }
 
 void UIController::knobRotation(int delta)
 {
-    resetInteracionTimer(Knob);
     _aircleanercontroller->set_fan_power(_aircleanercontroller->get_fan_power() + delta);
 }
 
 void UIController::knobPress(void)
 {
-    resetInteracionTimer(Knob);
+    Driver_mode mode = _aircleanercontroller->_settings->settings.mode;
+
+    if (mode == mode_Manual)
+    {
+        mode = mode_Auto;
+    }
+    else
+    {
+        mode = mode_Manual;
+    }
+
+    _aircleanercontroller->_settings->settings.mode = mode;
+}
+
+void UIController::buttonPress(void)
+{
+    if (_aircleanercontroller->purifier_on)
+    {
+        _aircleanercontroller->purifier_on = false;
+    }
+    else
+    {
+        _aircleanercontroller->purifier_on = true;
+    }
+}
+
+void UIController::input_event_physical(InteractionTypes type, void *parameter)
+{
+    resetInteracionTimer(interactionPhysical);
+
+    if (_screen->on == false)
+    {
+        _screen->on = true;
+        return;
+    }
+
+    switch (type)
+    {
+    case Knob_press:
+        knobPress();
+        break;
+    case Knob_rotate:
+        knobRotation((*(int *)parameter));
+        break;
+    case Button_press:
+        buttonPress();
+        break;
+
+    default:
+        break;
+    }
+
     Driver_mode mode = _aircleanercontroller->_settings->settings.mode;
 
     if (mode == mode_Manual)
@@ -87,14 +138,14 @@ void UIController::init(void)
 void UIController::renderScreen(void)
 {
     Purifer_status_struct *info;
-    info = _aircleanercontroller->get_whole_status();
+    info = _aircleanercontroller->update_and_get_whole_status();
 
     if (_screen->on == false)
     {
         return;
     }
 
-    if (timeFromlastAction[Knob] < 2000)
+    if (timeFromlastAction[interactionPhysical] < 2000)
     {
         _screen->render_settings_screen(info);
     }

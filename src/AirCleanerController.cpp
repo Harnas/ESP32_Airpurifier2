@@ -33,15 +33,21 @@ void AirCleanerController::read_sensors(void)
 
 int AirCleanerController::update_fan_speed(void)
 {
-    if (_settings->settings.mode == mode_Manual)
+    if (purifier_on)
     {
-        fan_speed = _settings->settings.manual_speed;
+        if (_settings->settings.mode == mode_Manual)
+        {
+            fan_speed = _settings->settings.manual_speed;
+        }
+        else
+        {
+            fan_speed = _settings->settings.auto_speed * _sensors->dust / 20;
+        }
     }
     else
     {
-        fan_speed = _settings->settings.auto_speed * _sensors->dust / 20;
+        fan_speed = 0;
     }
-
     fan_speed = _fan->set(fan_speed);
     return fan_speed;
 }
@@ -74,7 +80,7 @@ void AirCleanerController::set_fan_power(Driver_mode mode, int8_t val)
     }
 }
 
-Purifer_status_struct *AirCleanerController::get_whole_status(void)
+Purifer_status_struct *AirCleanerController::update_and_get_whole_status(void)
 {
     _status.dust = _sensors->dust;
     _status.set_power = get_fan_power();
@@ -84,6 +90,7 @@ Purifer_status_struct *AirCleanerController::get_whole_status(void)
     _status.pressure = _sensors->pressure;
     _status.humidity = _sensors->humidity;
     _status.internet = false;
+    _status.purifier_on = purifier_on;
 
     return &_status;
 }

@@ -53,25 +53,26 @@ void encoder_read()
 
   if (encoderDelta != 0)
   {
-    uiController.knobRotation(encoderDelta);
+    uiController.input_event_physical(Knob_rotate, &encoderDelta);
+    xSemaphoreGive(UIRefreshSemaphore);
   }
 }
 
 void encoderButtonPressed(void)
 {
-  uiController.knobPress();
+  uiController.input_event_physical(Knob_press, 0);
   xSemaphoreGive(UIRefreshSemaphore);
 }
 void boardButtonPressed(void)
 {
-  uiController.resetInteracionTimer(Button);
+  uiController.input_event_physical(Button_press, 0);
   xSemaphoreGive(UIRefreshSemaphore);
 
   digitalWrite(LED_BUILTIN, LOW);
 }
 void boardButtonPressedLong(void)
 {
-  uiController.resetInteracionTimer(Button);
+  uiController.input_event_physical(Button_press, 0);
   xSemaphoreGive(UIRefreshSemaphore);
 }
 
@@ -123,7 +124,8 @@ void setup()
   delay(200);
 
   Wire.begin(BME_SDA, BME_SCL);
-  bme.begin(0x58, &Wire); // 0x58 for BMP180
+  Serial.println("hello");
+  Serial.println(bme.begin(0x58, &Wire)); // 0x58 for BMP180
 
   pinMode(LED_BUILTIN, OUTPUT);
 
