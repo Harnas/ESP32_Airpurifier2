@@ -6,7 +6,9 @@ UIController::UIController(Screen *screen, AirCleanerController *aircleanercontr
 {
     _screen = screen;
     _aircleanercontroller = aircleanercontroller;
-    _XtalFreq = getXtalFrequencyMhz();
+
+    // _XtalFreq = getXtalFrequencyMhz();
+    _XtalFreq = 80;
 }
 
 void UIController::resetInteracionTimer(InteractionInterfaces type)
@@ -116,19 +118,6 @@ void UIController::input_event_physical(InteractionTypes type, void *parameter)
     default:
         break;
     }
-
-    Driver_mode mode = _aircleanercontroller->_settings->settings.mode;
-
-    if (mode == mode_Manual)
-    {
-        mode = mode_Auto;
-    }
-    else
-    {
-        mode = mode_Manual;
-    }
-
-    _aircleanercontroller->_settings->settings.mode = mode;
 }
 
 void UIController::init(void)

@@ -18,6 +18,7 @@ AirCleanerController::AirCleanerController(Settings *settings_controller, Sensor
     _settings->load();
 
     last_senor_read = 0;
+    purifier_on = true;
 }
 
 void AirCleanerController::save_settings(void)

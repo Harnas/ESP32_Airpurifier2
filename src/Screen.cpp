@@ -40,14 +40,6 @@ void Screen::render_basic_info_screen(Purifer_status_struct *info)
     sprintf(buffer, "%.2f\xB0 C", info->temperature);
     _screen->drawStr(0, 40, buffer);
 
-    if (info->purifier_on == true)
-    {
-        sprintf(buffer, "on");
-    }
-    else
-    {
-        sprintf(buffer, "off");
-    }
 }
 
 void Screen::render_settings_screen(Purifer_status_struct *info)
@@ -70,6 +62,17 @@ void Screen::render_settings_screen(Purifer_status_struct *info)
         sprintf(buffer, "Mode: Auto");
     }
     _screen->drawStr(0, 15, buffer);
+
+    if (info->purifier_on == true)
+    {
+        sprintf(buffer, "on");
+    }
+    else
+    {
+        sprintf(buffer, "off");
+    }
+    _screen->drawStr(0, 30, buffer);
+    
 }
 void Screen::refresh(void)
 {
